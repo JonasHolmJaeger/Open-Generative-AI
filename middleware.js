@@ -3,25 +3,15 @@ import { NextResponse } from 'next/server';
 export function middleware(request) {
     const url = request.nextUrl;
     
-    // --- 1. MUAPI ROUTING (Let the app talk to the AI freely) ---
-    const isMuApi = url.pathname.startsWith('/api/workflow') || 
-                    url.pathname.startsWith('/api/app') || 
-                    url.pathname.startsWith('/api/v1');
-
-    if (isMuApi) {
-        // Send requests directly to MuAPI without asking for the team password again
-        if (url.pathname.startsWith('/api/v1')) {
-            const targetUrl = new URL(url.pathname + url.search, 'https://api.muapi.ai');
-            return NextResponse.rewrite(targetUrl);
-        }
+    // 1. DATA ROUTING: Let the app's internal API folders talk to MuAPI freely
+    if (url.pathname.startsWith('/api/')) {
         return NextResponse.next();
     }
 
-    // --- 2. SECURITY (Only protect the visual website pages) ---
+    // 2. SECURITY: Only protect the visual website pages with the password
     const basicAuth = request.headers.get('authorization');
     let isAuthenticated = false;
 
-    // Verify the password only if it's a standard web browser request
     if (basicAuth && basicAuth.startsWith('Basic ')) {
         const authValue = basicAuth.split(' ')[1];
         const [user, pwd] = atob(authValue).split(':');

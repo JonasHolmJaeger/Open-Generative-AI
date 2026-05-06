@@ -3,7 +3,7 @@ import { getModelById, getVideoModelById, getI2IModelById, getI2VModelById, getV
 export class MuapiClient {
     constructor() {
         // Ideally user provides this in settings
-        this.baseUrl = typeof window !== 'undefined' ? '' : '[https://api.muapi.ai](https://api.muapi.ai)';
+        this.baseUrl = typeof window !== 'undefined' ? '/api' : '[https://api.muapi.ai](https://api.muapi.ai)';
     }
 
     getKey() {
